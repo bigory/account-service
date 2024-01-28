@@ -8,9 +8,9 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface TransactionRepository extends CrudRepository<Transaction, String> {
 
-    Iterable<Transaction> findAllByAccountId(Long id);
+    Iterable<Transaction> findAllTransactionsByAccountId(Long id);
 
     @Query("SELECT t FROM Transaction t JOIN t.account a JOIN a.user u WHERE u.id = :userId")
-    Iterable<Transaction> findAllByUserId(Long userId);
+    Iterable<Transaction> findAllTransactionsByUserId(Long userId);
 
 }

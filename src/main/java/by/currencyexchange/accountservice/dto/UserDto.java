@@ -1,15 +1,17 @@
 package by.currencyexchange.accountservice.dto;
 
 
-import by.currencyexchange.accountservice.entity.DocumentType;
+import lombok.Builder;
 import lombok.Data;
 
+
+@Builder
 @Data
 public class UserDto {
 
     private Long id;
     private String username;
     private String documentNumber;
-    private DocumentType documentType;
+    private String documentType;
 
 }

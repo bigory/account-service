@@ -1,9 +1,11 @@
 package by.currencyexchange.accountservice.dto;
 
+import lombok.Builder;
 import lombok.Data;
 
 import java.math.BigDecimal;
 
+@Builder
 @Data
 public class AccountDto {
 
@@ -11,4 +13,5 @@ public class AccountDto {
     private BigDecimal balance;
     private String currencyType;
     private UserDto user;
+
 }

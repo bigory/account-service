@@ -2,13 +2,10 @@ package by.currencyexchange.accountservice.service;
 
 import by.currencyexchange.accountservice.dto.AccountDto;
 import by.currencyexchange.accountservice.dto.TransactionDto;
-import by.currencyexchange.accountservice.entity.Account;
 import by.currencyexchange.accountservice.entity.DataTransfer;
 import by.currencyexchange.accountservice.entity.TransactionType;
 import by.currencyexchange.accountservice.exception.InsufficientFundsException;
-import by.currencyexchange.accountservice.exception.NotAccountInCurrency;
-import by.currencyexchange.accountservice.mapper.AccountMapper;
-import by.currencyexchange.accountservice.repository.AccountRepository;
+import by.currencyexchange.accountservice.exception.NotAccountInCurrencyException;
 import by.currencyexchange.accountservice.utils.ServiceAccountUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -24,11 +21,8 @@ import java.time.LocalDateTime;
 @Service
 public class TransferService {
 
-    private final AccountRepository accountRepository;
     private final AccountService accountService;
     private final TransactionService transactionService;
-
-    private final AccountMapper accountMapper;
 
 
     @Transactional(isolation = Isolation.SERIALIZABLE)
@@ -51,10 +45,10 @@ public class TransferService {
             throw new InsufficientFundsException("Insufficient funds in the account " + accountDto.getId());
         BigDecimal newBalance = currentBalance.subtract(amount);
         accountDto.setBalance(newBalance);
-        Account account = accountRepository.save(accountMapper.toEntity(accountDto));
+        AccountDto account = accountService.saveAccount(accountDto);
         log.info("Account: {}", accountDto);
         transactionService.saveTransaction(TransactionDto.builder()
-                .account(accountMapper.toDto(account))
+                .account(account)
                 .amount(amount)
                 .transactionType(TransactionType.DEBIT.name())
                 .transactionTime(transactionTime)
@@ -67,10 +61,10 @@ public class TransferService {
         BigDecimal currentBalance = accountDto.getBalance();
         BigDecimal newBalance = currentBalance.add(ServiceAccountUtil.round(amount));
         accountDto.setBalance(newBalance);
-        Account account = accountRepository.save(accountMapper.toEntity(accountDto));
+        AccountDto account = accountService.saveAccount(accountDto);
         log.info("Account: {}", accountDto);
         transactionService.saveTransaction(TransactionDto.builder()
-                .account(accountMapper.toDto(account))
+                .account(account)
                 .amount(amount)
                 .transactionType(TransactionType.REFILL.name())
                 .transactionTime(timeTransfer)
@@ -79,12 +73,13 @@ public class TransferService {
 
     private void isSameCurrencyAccount(AccountDto fromAccountDto, AccountDto toAccountDto, DataTransfer dataTransfer) {
         if (ServiceAccountUtil.isSameCurrency(fromAccountDto.getCurrencyType(), dataTransfer.getCurrencyType().name()))
-            throw new NotAccountInCurrency("No account in this currency " + dataTransfer.getCurrencyType() + " for userId: " + dataTransfer.getAccountIdFrom());
+            throw new NotAccountInCurrencyException("No account in this currency " + dataTransfer.getCurrencyType() + " for userId: " + dataTransfer.getAccountIdFrom());
         else if (ServiceAccountUtil.isSameCurrency(toAccountDto.getCurrencyType(), dataTransfer.getCurrencyType().name()))
-            throw new NotAccountInCurrency("No account in this currency " + dataTransfer.getCurrencyType() + " for userId: " + dataTransfer.getAccountIdFrom());
+            throw new NotAccountInCurrencyException("No account in this currency " + dataTransfer.getCurrencyType() + " for userId: " + dataTransfer.getAccountIdFrom());
     }
 
     private boolean isSufficientFunds(BigDecimal amount, BigDecimal currentBalance) {
         return !ServiceAccountUtil.isZero(currentBalance) || !ServiceAccountUtil.equal(currentBalance, amount);
     }
+
 }

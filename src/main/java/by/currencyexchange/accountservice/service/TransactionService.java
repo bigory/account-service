@@ -32,15 +32,14 @@ public class TransactionService {
 
     public List<TransactionDto> getAllTransactions() {
         return getListTransactionsDto(transactionRepository.findAll());
-
     }
 
     public List<TransactionDto> getAllTransactionsByAccountId(Long id) {
-        return getListTransactionsDto(transactionRepository.findAllByAccountId(id));
+        return getListTransactionsDto(transactionRepository.findAllTransactionsByAccountId(id));
     }
 
     public List<TransactionDto> getAllTransactionsByUserId(Long id) {
-        return getListTransactionsDto(transactionRepository.findAllByUserId(id));
+        return getListTransactionsDto(transactionRepository.findAllTransactionsByUserId(id));
     }
 
     private List<TransactionDto> getListTransactionsDto(Iterable<Transaction> transactions) {
@@ -48,4 +47,5 @@ public class TransactionService {
                 .map(transactionMapper::toDto)
                 .collect(Collectors.toList());
     }
+
 }
