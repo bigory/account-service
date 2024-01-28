@@ -20,4 +20,9 @@ public class AccountService {
         return accountMapper.toDto(accountRepository.findById(accountId).orElseThrow(() ->
                 new EntityNotFoundException("Invalid account is id: " + accountId)));
     }
+
+    public AccountDto saveAccount(AccountDto accountDto) {
+        return accountMapper.toDto(accountRepository.save(accountMapper.toEntity(accountDto)));
+    }
+
 }

@@ -19,7 +19,7 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Message exception: " + exception.getMessage());
     }
 
-    @ExceptionHandler({EntityNotFoundException.class, InsufficientFundsException.class, NotAccountInCurrency.class})
+    @ExceptionHandler({EntityNotFoundException.class, InsufficientFundsException.class, NotAccountInCurrencyException.class})
     public ResponseEntity<?> handleException(RuntimeException exception) {
         log.error("{}", exception.getMessage());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Message exception: " + exception.getMessage());

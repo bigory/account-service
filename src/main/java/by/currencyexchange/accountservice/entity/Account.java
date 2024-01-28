@@ -12,6 +12,8 @@ import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 
 import java.math.BigDecimal;
 
@@ -29,6 +31,7 @@ public class Account {
     private BigDecimal balance;
     @Enumerated(value = EnumType.STRING)
     private CurrencyType currencyType;
+    @Fetch(FetchMode.JOIN)
     @ManyToOne(fetch = FetchType.LAZY)
     private User user;
 

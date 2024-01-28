@@ -18,15 +18,14 @@ public class TransactionController {
 
     private final TransactionService transactionService;
 
-    @GetMapping("/transactions")
-    private List<TransactionDto> getAllTransactions() {
-        return transactionService.getAllTransactions();
-    }
-
-
     @GetMapping("/transactions/{id}")
     private TransactionDto getTransaction(@PathVariable("id") String id) {
         return transactionService.getTransactionById(id);
+    }
+
+    @GetMapping("/transactions")
+    private List<TransactionDto> getAllTransactions() {
+        return transactionService.getAllTransactions();
     }
 
     @GetMapping("/transactions/account/{accountId}")

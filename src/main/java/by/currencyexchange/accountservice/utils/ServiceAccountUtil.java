@@ -24,4 +24,5 @@ public class ServiceAccountUtil {
     public boolean isSameCurrency(String currencyAccountFrom, String currencyAccountTo) {
         return !currencyAccountFrom.equals(currencyAccountTo);
     }
+
 }
